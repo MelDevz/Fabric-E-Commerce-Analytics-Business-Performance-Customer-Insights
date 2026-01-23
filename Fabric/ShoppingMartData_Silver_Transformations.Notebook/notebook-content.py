@@ -32,6 +32,10 @@
 
 from pyspark.sql.functions import *
 
+df_customers = spark.read.format("csv").option("header", "true").load("Files/ShoppingMart_Bronze_Customers/ShoppingMart_customers.csv")
+df_orders = spark.read.format("csv").option("header", "true").load("Files/ShoppingMart_Bronze_Orders/ShoppingMart_orders.csv")
+df_products = spark.read.format("csv").option("header", "true").load("Files/ShoppingMart_Bronze_Products/ShoppingMart_products.csv")
+display(df_orders)
 
 
 # METADATA ********************
