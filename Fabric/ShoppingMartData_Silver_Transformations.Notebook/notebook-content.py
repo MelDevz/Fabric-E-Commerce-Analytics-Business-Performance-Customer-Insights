@@ -57,3 +57,60 @@ display(df)
 # META   "language": "python",
 # META   "language_group": "synapse_pyspark"
 # META }
+
+# CELL ********************
+
+df_orders = df_orders.dropna(subset = ["OrderID", "CustomerID", "ProductID", "OrderDate", "TotalAmount"])
+df_orders = df_orders.withColumn("OrderDate", to_date(col("OrderDate")))
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+from pyspark.sql.functions import *
+
+df_customers = spark.read.format("csv").option("header", "true").load("Files/ShoppingMart_Bronze_Customers/ShoppingMart_customers.csv")
+df_orders = spark.read.format("csv").option("header", "true").load("Files/ShoppingMart_Bronze_Orders/ShoppingMart_orders.csv")
+df_products = spark.read.format("csv").option("header", "true").load("Files/ShoppingMart_Bronze_Products/ShoppingMart_products.csv")
+
+df_orders = df_orders.dropna(subset = ["OrderID", "CustomerID", "ProductID", "OrderDate", "TotalAmount"])
+df_orders = df_orders.withColumn("OrderDate", to_date(col("OrderDate")))
+
+df_orders = df_orders \
+     .join(df_customers, on = 'CustomerID', how="inner") \
+     .join(df_products, on = "ProductID", how = "inner")
+
+display(df_orders)
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+df_orders.write.mode("overwrite").parquet("Files/ShoppingMart_Bronze_Customers/ShoppingMart_customers_orderdata")
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
